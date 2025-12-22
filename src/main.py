@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from generate_page import generate_page
+from generate_page import generate_pages_recursive
 
 
 def _copy_directory_recursive(src_dir: str, dest_dir: str) -> None:
@@ -43,10 +43,9 @@ def main():
     public_dir = os.path.join(project_root, "public")
     copy_directory_recursive(static_dir, public_dir)
 
-    from_path = os.path.join(project_root, "content", "index.md")
     template_path = os.path.join(project_root, "template.html")
-    dest_path = os.path.join(public_dir, "index.html")
-    generate_page(from_path, template_path, dest_path)
+    content_dir = os.path.join(project_root, "content")
+    generate_pages_recursive(content_dir, template_path, public_dir)
 
 
 if __name__ == "__main__":

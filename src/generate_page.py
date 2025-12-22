@@ -34,3 +34,25 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
         f.write(full_html)
 
 
+def generate_pages_recursive(
+    dir_path_content: str, template_path: str, dest_dir_path: str
+) -> None:
+    """
+    Walk a content directory tree and generate an HTML file for every .md file,
+    preserving the directory structure under dest_dir.
+
+    Example:
+        content/blog/x/index.md -> public/blog/x/index.html
+    """
+    for root, _, files in os.walk(dir_path_content):
+        for filename in files:
+            if not filename.endswith(".md"):
+                continue
+
+            from_path = os.path.join(root, filename)
+            rel_path = os.path.relpath(from_path, dir_path_content)
+            rel_html = os.path.splitext(rel_path)[0] + ".html"
+            dest_path = os.path.join(dest_dir_path, rel_html)
+            generate_page(from_path, template_path, dest_path)
+
+
