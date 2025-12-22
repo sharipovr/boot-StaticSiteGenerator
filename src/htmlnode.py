@@ -18,3 +18,4 @@ class HTMLNode:
             f"HTMLNode(tag={self.tag}, value={self.value}, "
             f"children={self.children}, props={self.props})"
         )
+
