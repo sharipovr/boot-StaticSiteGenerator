@@ -13,7 +13,7 @@ def extract_title(markdown: str) -> str:
     raise Exception("No h1 header found")
 
 
-def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
+def generate_page(from_path: str, template_path: str, dest_path: str, basepath: str) -> None:
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path, "r", encoding="utf-8") as f:
@@ -26,6 +26,9 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
     title = extract_title(markdown)
 
     full_html = template.replace("{{ Title }}", title).replace("{{ Content }}", content_html)
+    full_html = full_html.replace('href="/', f'href="{basepath}').replace(
+        'src="/', f'src="{basepath}'
+    )
 
     dest_dir = os.path.dirname(dest_path)
     if dest_dir != "":
@@ -35,14 +38,14 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
 
 
 def generate_pages_recursive(
-    dir_path_content: str, template_path: str, dest_dir_path: str
+    dir_path_content: str, template_path: str, dest_dir_path: str, basepath: str
 ) -> None:
     """
     Walk a content directory tree and generate an HTML file for every .md file,
     preserving the directory structure under dest_dir.
 
     Example:
-        content/blog/x/index.md -> public/blog/x/index.html
+        content/blog/x/index.md -> docs/blog/x/index.html
     """
     for root, _, files in os.walk(dir_path_content):
         for filename in files:
@@ -53,6 +56,6 @@ def generate_pages_recursive(
             rel_path = os.path.relpath(from_path, dir_path_content)
             rel_html = os.path.splitext(rel_path)[0] + ".html"
             dest_path = os.path.join(dest_dir_path, rel_html)
-            generate_page(from_path, template_path, dest_path)
+            generate_page(from_path, template_path, dest_path, basepath)
 
 

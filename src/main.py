@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 from generate_page import generate_pages_recursive
 
@@ -38,14 +39,18 @@ def copy_directory_recursive(src_dir: str, dest_dir: str) -> None:
 
 
 def main():
+    basepath = "/"
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     static_dir = os.path.join(project_root, "static")
-    public_dir = os.path.join(project_root, "public")
-    copy_directory_recursive(static_dir, public_dir)
+    docs_dir = os.path.join(project_root, "docs")
+    copy_directory_recursive(static_dir, docs_dir)
 
     template_path = os.path.join(project_root, "template.html")
     content_dir = os.path.join(project_root, "content")
-    generate_pages_recursive(content_dir, template_path, public_dir)
+    generate_pages_recursive(content_dir, template_path, docs_dir, basepath)
 
 
 if __name__ == "__main__":
